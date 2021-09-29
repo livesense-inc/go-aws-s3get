@@ -6,7 +6,7 @@ before:
     - go mod download
 builds:
   - id: main
-    main: .
+    main: ./cmd/s3get
     binary: s3get
     flags:
       - -trimpath
