@@ -106,7 +106,7 @@ func Test_getOutputPath(t *testing.T) {
 			wantErr:        false,
 		},
 		{
-			name:           "src is valid and dest is blank file path, return file path",
+			name:           "src is valid and dest is valid file path, return file path",
 			args:           args{src: "s3://yo/hey", dest: "/tmp/outputpath"},
 			wantOutputPath: "/tmp/outputpath",
 			wantErr:        false,
