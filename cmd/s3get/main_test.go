@@ -19,21 +19,21 @@ func Test_splitS3Path(t *testing.T) {
 			name:           "str is valid s3 path format, return valid response",
 			args:           args{str: "s3://yo/hey"},
 			wantBucketName: "yo",
-			wantKey:        "/hey",
+			wantKey:        "hey",
 			wantErr:        false,
 		},
 		{
 			name:           "str is valid s3 path '/', return valid response",
 			args:           args{str: "s3://yo/"},
 			wantBucketName: "yo",
-			wantKey:        "/",
+			wantKey:        "",
 			wantErr:        false,
 		},
 		{
 			name:           "str is valid s3 path '/hey/hey', return valid response",
 			args:           args{str: "s3://yo/hey/hey"},
 			wantBucketName: "yo",
-			wantKey:        "/hey/hey",
+			wantKey:        "hey/hey",
 			wantErr:        false,
 		},
 		{
@@ -121,6 +121,12 @@ func Test_getOutputPath(t *testing.T) {
 			name:           "src is valid and dest is directory with /, return directory + base name of src",
 			args:           args{src: "s3://yo/hey", dest: "/tmp/"},
 			wantOutputPath: "/tmp/hey",
+			wantErr:        false,
+		},
+		{
+			name:           "src is valid and dest is '-', return blank",
+			args:           args{src: "s3://yo/hey", dest: "-"},
+			wantOutputPath: "",
 			wantErr:        false,
 		},
 	}
