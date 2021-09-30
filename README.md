@@ -11,10 +11,12 @@ Simple. No install. No dependencies.
 
 ### Install
 
-For example, on Linux x86_64.
+Download a binary and put it to PATH.
+
+For example, on Linux.
 
 ```bash
-curl -o /usr/local/bin/s3get https://github.com/livesense-inc/go-aws-s3get/releases/download/v0.0.2/s3get_linux_amd64
+curl -L -o /usr/local/bin/s3get $(curl --silent "https://api.github.com/repos/livesense-inc/go-aws-s3get/releases/latest" | jq --arg PLATFORM_ARCH "$(echo `uname -s`-`uname -m`)" -r '.assets[] | contains(.name | endswith($PLATFORM_ARCH)).browser_download_url')
 ```
 
 A full list of binaries are [here](./releases/latest).

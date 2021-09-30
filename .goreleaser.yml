@@ -30,10 +30,12 @@ builds:
 
 archives:
   - id: main
-    name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    name_template: '{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
     builds:
       - main
     format: binary
+    replacements:
+      amd64: x86_64
 
 release:
   prerelease: auto
