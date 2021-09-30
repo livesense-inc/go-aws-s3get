@@ -44,15 +44,38 @@ func getMD5(path string) (string, error) {
 	return hex.EncodeToString(hashInBytes), nil
 }
 
-func splitS3Path(path string) (bucketName string, key string, err error) {
-	if !strings.HasPrefix(path, "s3://") {
+func splitS3Path(str string) (bucketName string, key string, err error) {
+	if !strings.HasPrefix(str, "s3://") {
 		return "", "", fmt.Errorf("s3 path is invalid format")
 	}
 
-	sub := strings.SplitN(path[len("s3://"):], "/", 2)
+	sub := strings.SplitN(str[len("s3://"):], "/", 2)
+	if len(sub) != 2 {
+		return "", "", fmt.Errorf("s3 path is invalid format")
+	}
 	bucketName = sub[0]
 	key = "/" + sub[1]
+	if bucketName == "" {
+		return "", "", fmt.Errorf("s3 path is invalid format")
+	}
 	return
+}
+
+func getOutputPath(src string, dest string) (outputPath string, err error) {
+	if src == "" {
+		return "", fmt.Errorf("src is invalid")
+	}
+	outputPath = path.Base(src)
+	if dest != "" {
+		if s, err := os.Stat(dest); err == nil && s.IsDir() {
+			// if directory path is given, output to directory
+			outputPath = strings.TrimRight(dest, "/") + "/" + path.Base(src)
+		} else {
+			// output to dest
+			outputPath = dest
+		}
+	}
+	return outputPath, nil
 }
 
 func download(ctx *cli.Context) error {
@@ -71,18 +94,12 @@ func download(ctx *cli.Context) error {
 	}
 
 	// parse 2nd arg
-	dest := path.Base(src)
-	if ctx.Args().Len() == 2 {
-		arg := ctx.Args().Get(1)
-		if s, err := os.Stat(arg); err == nil && s.IsDir() {
-			// if directory path is given, output to directory
-			dest = strings.TrimRight(ctx.Args().Get(1), "/") + "/" + path.Base(src)
-		} else {
-			// output to arg
-			dest = arg
-		}
+	dest, err := getOutputPath(src, ctx.Args().Get(1))
+	if err != nil {
+		return argumentError()
 	}
 
+	// read AWS Access Keys
 	awsAccessKeyID := ctx.String("id")
 	awsSecretAccessKey := ctx.String("secret")
 	awsRegion := ctx.String("region")

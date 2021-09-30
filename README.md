@@ -1,6 +1,9 @@
 # go-aws-s3get
 A stupid simple S3 downloader CLI tool with supporting AWS Access Key, implemented by Golang.
 
+[![Test](https://github.com/livesense-inc/go-aws-s3get/actions/workflows/test.yml/badge.svg)](https://github.com/livesense-inc/go-aws-s3get/actions/workflows/test.yml)
+
+
 ## Concept
 Simple. No install. No dependencies.
 
@@ -8,9 +11,14 @@ Simple. No install. No dependencies.
 
 ### Install
 
+For example, on Linux x86_64.
+
 ```bash
-curl -o /usr/local/bin/s3get TBA
+curl -o /usr/local/bin/s3get https://github.com/livesense-inc/go-aws-s3get/releases/download/v0.0.2/s3get_linux_amd64
 ```
+
+A full list of binaries are [here](./releases/latest).
+
 
 ### Run
 
@@ -26,6 +34,33 @@ export AWS_SECRET_ACCESS_KEY=xxxx
 export AWS_DEFAULT_REGION=ap-north-east1
 
 s3get s3://bucket-name/path/to/file output-file
+```
+
+# Hack and Develop
+
+First, fork this repo, and get your clone locally.
+
+1. Install [go](http://golang.org)
+2. Install `make`
+3. Install [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+
+Write code and remove unused modules.
+
+```
+make tidy
+```
+
+To test, run
+
+```
+make lint
+make test
+```
+
+To build, run
+
+```
+make build
 ```
 
 
