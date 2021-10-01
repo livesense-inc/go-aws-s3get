@@ -125,7 +125,6 @@ func writeToFile(dest string, res *s3.GetObjectOutput) (bytes int, err error) {
 }
 
 func writeToStdout(res *s3.GetObjectOutput) (bytes int, err error) {
-	// write to file
 	bytes = 0
 	buf := make([]byte, 4096)
 	for {
