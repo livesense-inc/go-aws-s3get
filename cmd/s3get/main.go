@@ -82,7 +82,7 @@ func getOutputPath(src string, dest string) (outputPath string, err error) {
 	return outputPath, nil
 }
 
-func writeToFile(dest string, res *s3.GetObjectOutput) (bytes int, err error) {
+func writeToFile(res *s3.GetObjectOutput, dest string) (bytes int, err error) {
 	// create tmpfile
 	tmpfile := dest + incompleteFileSuffix
 	f, err := os.Create(tmpfile)
@@ -228,7 +228,7 @@ func download(ctx *cli.Context) error {
 		}
 		os.Stderr.WriteString(fmt.Sprintf("successfuly output to stdout (%d bytes)\n", bytes))
 	} else {
-		bytes, err := writeToFile(dest, res)
+		bytes, err := writeToFile(res, dest)
 		if err != nil {
 			return nil
 		}
