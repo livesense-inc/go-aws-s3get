@@ -16,8 +16,8 @@ Download a binary and put it to PATH.
 For example, on Linux.
 
 ```bash
-sudo curl -L -o /usr/local/bin/s3get $(curl --silent "https://api.github.com/repos/livesense-inc/go-aws-s3get/releases/latest" | jq --arg PLATFORM_ARCH "$(echo `uname -s`-`uname -m` | tr A-Z a-z)" -r '.assets[] | contains(.name | endswith($PLATFORM_ARCH)).browser_download_url')
-sudo chmod +x /usr/local/bin/s3get
+sudo curl -L -o /usr/local/bin/s3get $(curl --silent "https://api.github.com/repos/livesense-inc/go-aws-s3get/releases/latest" | jq --arg PLATFORM_ARCH "$(echo `uname -s`-`uname -m` | tr A-Z a-z)" -r '.assets[] | select(.name | endswith($PLATFORM_ARCH)) | .browser_download_url')
+sudo chmod 755 /usr/local/bin/s3get
 ```
 
 A full list of binaries are [here](./releases/latest).
