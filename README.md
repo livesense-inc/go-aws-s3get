@@ -20,7 +20,7 @@ sudo curl -L -o /usr/local/bin/s3get $(curl --silent "https://api.github.com/rep
 sudo chmod 755 /usr/local/bin/s3get
 ```
 
-A full list of binaries are [here](./releases/latest).
+A full list of binaries are [here](https://github.com/livesense-inc/go-aws-s3get/releases/latest).
 
 
 ### Run
