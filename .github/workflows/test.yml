@@ -51,10 +51,12 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: "testid"
           AWS_SECRET_ACCESS_KEY: "testsecret"
+          AWS_DEFAULT_REGION: "us-east-1"
+          AWS_EC2_METADATA_DISABLED: true
         run: |
           echo "OK" > ~/test.txt
-          aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://test
-          aws --endpoint-url http://127.0.0.1:9000/ s3 cp ~/test.txt s3://test/test.txt
+          aws --endpoint-url=http://127.0.0.1:9000 s3 mb s3://test
+          aws --endpoint-url=http://127.0.0.1:9000 s3 cp ~/test.txt s3://test/test.txt
           ./bin/s3get --endpoint-url=http://127.0.0.1:9000 s3://test/test.txt - | grep "OK"
           [ $? -ne 0] && exit 1
           ./bin/s3get --endpoint-url=http://127.0.0.1:9000 s3://test/test.txt ~/test.out
