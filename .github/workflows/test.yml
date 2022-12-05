@@ -1,5 +1,8 @@
 name: Test
 on:
+  push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -7,6 +10,18 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
+    services:
+      minio:
+        image: minio/minio:edge-cicd
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ROOT_USER: "testid"
+          MINIO_ROOT_PASSWORD: "testsecret"
+        volumes:
+          - /tmp/data:/data
+        options: --name minio --health-cmd "curl http://localhost:9000/minio/health/live"
 
     steps:
       - name: Check out code into the Go module directory
@@ -38,15 +53,6 @@ jobs:
       - name: Check build
         run: |
           make build
-
-      - name: Run minio for integration tests
-        run: |
-          docker run -d -p 9000:9000 --name minio \
-                     -e "MINIO_ROOT_USER=testid" \
-                     -e "MINIO_ROOT_PASSWORD=testsecret" \
-                     -v /tmp/data:/data \
-                     -v /tmp/config:/root/.minio \
-                     minio/minio server /data
 
       - name: Check s3get binary
         env:
