@@ -165,13 +165,34 @@ func download(ctx *cli.Context) error {
 	}
 	outputToStdout := (dest == "")
 
-	// Load the Shared AWS Configuration (~/.aws/config)
-	cfg, err := config.LoadDefaultConfig(
-		context.TODO(),
-		config.WithSharedConfigProfile(ctx.String("profile")),
-	)
-	if err != nil {
-		return err
+	var cfg aws.Config
+
+	endpoint := ctx.String("endpoint-url")
+	if endpoint != "" {
+		resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+			return aws.Endpoint{
+				URL:               endpoint,
+				HostnameImmutable: true,
+			}, nil
+		})
+		// Load the Shared AWS Configuration (~/.aws/config)
+		cfg, err = config.LoadDefaultConfig(
+			context.TODO(),
+			config.WithEndpointResolverWithOptions(resolver),
+			config.WithSharedConfigProfile(ctx.String("profile")),
+		)
+		if err != nil {
+			return err
+		}
+	} else {
+		// Load the Shared AWS Configuration (~/.aws/config)
+		cfg, err = config.LoadDefaultConfig(
+			context.TODO(),
+			config.WithSharedConfigProfile(ctx.String("profile")),
+		)
+		if err != nil {
+			return err
+		}
 	}
 
 	// read AWS Access Keys and overwrite credential
@@ -241,11 +262,10 @@ func main() {
 	app := &cli.App{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "region",
-				Aliases:  []string{"r"},
-				Usage:    "AWS region name",
-				EnvVars:  []string{"AWS_DEFAULT_REGION", "AWS_REGION"},
-				Required: true,
+				Name:    "region",
+				Aliases: []string{"r"},
+				Usage:   "AWS region name",
+				EnvVars: []string{"AWS_DEFAULT_REGION", "AWS_REGION"},
 			},
 			&cli.StringFlag{
 				Name:    "profile",
@@ -267,6 +287,11 @@ func main() {
 				Usage:       "AWS_SECRET_ACCESS_KEY, recommend to use env",
 				EnvVars:     []string{"AWS_SECRET_ACCESS_KEY"},
 				DefaultText: "secret",
+			},
+			&cli.StringFlag{
+				Name:    "endpoint-url",
+				Usage:   "Specifies the URL to send the request to",
+				EnvVars: []string{"AWS_ENDPOINT_URL"},
 			},
 		},
 		HideHelpCommand: true,
